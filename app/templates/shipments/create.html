@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Create Shipment{% endblock %}
+{% block content %}
+<h1>Create Shipment</h1>
+<form method="post">
+  {{ form.csrf_token }}
+  <label>Origin</label> {{ form.origin() }} <br>
+  <label>Destination</label> {{ form.destination() }} <br>
+  <label>Weight (kg)</label> {{ form.weight_kg() }} <br><br>
+
+  <fieldset>
+    <legend>Premium options</legend>
+    <label>{{ form.insurance() }} Insurance</label><br>
+    <label>{{ form.express() }} Express</label>
+  </fieldset>
+  <br>
+  {{ form.submit() }}
+</form>
+{% endblock %}

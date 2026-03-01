@@ -1,0 +1,9 @@
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+.container { padding: 16px; }
+.nav { display: flex; justify-content: space-between; padding: 12px 16px; background: #111; }
+.nav a { color: #fff; margin-right: 12px; text-decoration: none; }
+.badge { color: #111; background: #ffd24d; padding: 2px 8px; border-radius: 8px; margin-right: 12px; }
+.flash { padding: 10px; margin: 10px 0; border-radius: 8px; }
+.flash.success { background: #d1fae5; }
+.flash.warning { background: #fef3c7; }
+.flash.danger { background: #fee2e2; }

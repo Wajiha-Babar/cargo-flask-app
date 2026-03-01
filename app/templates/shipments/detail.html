@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Shipment {{ shipment.tracking_number }}{% endblock %}
+{% block content %}
+<h1>Shipment {{ shipment.tracking_number }}</h1>
+<p><b>Route:</b> {{ shipment.origin }} → {{ shipment.destination }}</p>
+<p><b>Weight:</b> {{ shipment.weight_kg }} kg</p>
+<p><b>Status:</b> {{ shipment.status }}</p>
+<p><b>Insurance:</b> {{ "Yes" if shipment.insurance else "No" }}</p>
+<p><b>Express:</b> {{ "Yes" if shipment.express else "No" }}</p>
+
+<h2>Events</h2>
+<ul>
+  {% for e in shipment.events %}
+    <li>{{ e.created_at }} — <b>{{ e.label }}</b> — {{ e.note or "" }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

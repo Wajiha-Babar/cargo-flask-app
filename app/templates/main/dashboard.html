@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<p>Welcome, {{ current_user.name }}.</p>
+
+<h2>Your recent shipments</h2>
+{% if shipments %}
+  <ul>
+    {% for s in shipments %}
+      <li>
+        <a href="{{ url_for('shipments.detail', shipment_id=s.id) }}">{{ s.tracking_number }}</a>
+        — {{ s.origin }} → {{ s.destination }} — {{ s.status }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No shipments yet. <a href="{{ url_for('shipments.create') }}">Create one</a>.</p>
+{% endif %}
+{% endblock %}

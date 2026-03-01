@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Shipments{% endblock %}
+{% block content %}
+<h1>Shipments</h1>
+{% if shipments %}
+  <ul>
+    {% for s in shipments %}
+      <li>
+        <a href="{{ url_for('shipments.detail', shipment_id=s.id) }}">{{ s.tracking_number }}</a>
+        — {{ s.origin }} → {{ s.destination }} — {{ s.status }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No shipments found.</p>
+{% endif %}
+{% endblock %}
