@@ -7,3 +7,5 @@ body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
 .flash.success { background: #d1fae5; }
 .flash.warning { background: #fef3c7; }
 .flash.danger { background: #fee2e2; }
+.card { border: 0; }
+.navbar-brand { letter-spacing: 0.2px; }

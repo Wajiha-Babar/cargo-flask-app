@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 
 from ..extensions import db
 from ..models import Shipment, ShipmentEvent
+from ..utils import calc_price
 from .forms import ShipmentCreateForm
 
 bp = Blueprint("shipments", __name__)
@@ -14,7 +15,12 @@ def generate_tracking():
 @bp.route("/")
 @login_required
 def list_shipments():
-    shipments = Shipment.query.filter_by(user_id=current_user.id).order_by(Shipment.created_at.desc()).all()
+    shipments = (
+        Shipment.query
+        .filter_by(user_id=current_user.id)
+        .order_by(Shipment.created_at.desc())
+        .all()
+    )
     return render_template("shipments/list.html", shipments=shipments)
 
 @bp.route("/create", methods=["GET", "POST"])
@@ -22,14 +28,19 @@ def list_shipments():
 def create():
     form = ShipmentCreateForm()
     if form.validate_on_submit():
-
         insurance = bool(form.insurance.data)
         express = bool(form.express.data)
 
-        # premium gating
         if (insurance or express) and not current_user.is_premium:
-            flash("Insurance/Express are Premium features. Upgrade your plan.", "warning")
+            flash("Insurance/Express are Premium features. Upgrade your plan from Profile.", "warning")
             return render_template("shipments/create.html", form=form)
+
+        price = calc_price(
+            weight_kg=form.weight_kg.data,
+            distance_km=form.distance_km.data,
+            express=express,
+            insurance=insurance,
+        )
 
         shipment = Shipment(
             tracking_number=generate_tracking(),
@@ -37,15 +48,20 @@ def create():
             origin=form.origin.data,
             destination=form.destination.data,
             weight_kg=form.weight_kg.data,
+            distance_km=form.distance_km.data,
             insurance=insurance,
             express=express,
+            price=price,
             status="CREATED",
         )
         db.session.add(shipment)
         db.session.flush()
 
-        ev = ShipmentEvent(shipment_id=shipment.id, label="CREATED", note="Shipment created")
-        db.session.add(ev)
+        db.session.add(ShipmentEvent(
+            shipment_id=shipment.id,
+            label="CREATED",
+            note="Shipment created",
+        ))
         db.session.commit()
 
         flash("Shipment created successfully.", "success")

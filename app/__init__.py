@@ -5,7 +5,7 @@ from .config import Config
 from .extensions import db, migrate, login_manager
 
 def create_app():
-    load_dotenv()  # loads .env locally
+    load_dotenv()
 
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -17,9 +17,11 @@ def create_app():
     from .auth.routes import bp as auth_bp
     from .main.routes import bp as main_bp
     from .shipments.routes import bp as shipments_bp
+    from .admin.routes import bp as admin_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(shipments_bp, url_prefix="/shipments")
+    app.register_blueprint(admin_bp, url_prefix="/admin")
 
     return app

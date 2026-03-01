@@ -1,17 +1,51 @@
 {% extends "base.html" %}
 {% block title %}Shipment {{ shipment.tracking_number }}{% endblock %}
 {% block content %}
-<h1>Shipment {{ shipment.tracking_number }}</h1>
-<p><b>Route:</b> {{ shipment.origin }} → {{ shipment.destination }}</p>
-<p><b>Weight:</b> {{ shipment.weight_kg }} kg</p>
-<p><b>Status:</b> {{ shipment.status }}</p>
-<p><b>Insurance:</b> {{ "Yes" if shipment.insurance else "No" }}</p>
-<p><b>Express:</b> {{ "Yes" if shipment.express else "No" }}</p>
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h4 class="mb-1">{{ shipment.tracking_number }}</h4>
+            <div class="text-muted">{{ shipment.origin }} → {{ shipment.destination }}</div>
+          </div>
+          <span class="badge text-bg-secondary">{{ shipment.status }}</span>
+        </div>
 
-<h2>Events</h2>
-<ul>
-  {% for e in shipment.events %}
-    <li>{{ e.created_at }} — <b>{{ e.label }}</b> — {{ e.note or "" }}</li>
-  {% endfor %}
-</ul>
+        <hr>
+        <div><b>Weight:</b> {{ shipment.weight_kg }} kg</div>
+        <div><b>Distance:</b> {{ shipment.distance_km }} km</div>
+        <div><b>Price:</b> Rs {{ "%.2f"|format(shipment.price) }}</div>
+        <div class="mt-2">
+          <b>Insurance:</b> {{ "Yes" if shipment.insurance else "No" }} |
+          <b>Express:</b> {{ "Yes" if shipment.express else "No" }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white"><b>Tracking timeline</b></div>
+      <div class="card-body">
+        {% if shipment.events %}
+          <ul class="list-group list-group-flush">
+            {% for e in shipment.events %}
+              <li class="list-group-item">
+                <div class="d-flex justify-content-between">
+                  <div class="fw-semibold">{{ e.label }}</div>
+                  <div class="text-muted small">{{ e.created_at }}</div>
+                </div>
+                {% if e.note %}<div class="text-muted">{{ e.note }}</div>{% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="text-muted">No events yet.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

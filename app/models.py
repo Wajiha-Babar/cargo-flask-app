@@ -15,10 +15,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(180), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(255), nullable=False)
 
-    # simple "premium" logic
     plan = db.Column(db.String(20), nullable=False, default="free")  # free | premium
     role = db.Column(db.String(20), nullable=False, default="customer")  # customer | admin
-
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     shipments = db.relationship("Shipment", backref="owner", lazy=True)
@@ -33,6 +31,7 @@ class User(db.Model, UserMixin):
     def is_premium(self) -> bool:
         return self.plan == "premium"
 
+
 class Shipment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tracking_number = db.Column(db.String(30), unique=True, index=True, nullable=False)
@@ -41,21 +40,29 @@ class Shipment(db.Model):
 
     origin = db.Column(db.String(120), nullable=False)
     destination = db.Column(db.String(120), nullable=False)
-    weight_kg = db.Column(db.Float, nullable=False)
 
-    # premium options
+    weight_kg = db.Column(db.Float, nullable=False)
+    distance_km = db.Column(db.Float, nullable=False, default=10)
+
     insurance = db.Column(db.Boolean, default=False)
     express = db.Column(db.Boolean, default=False)
+
+    price = db.Column(db.Float, nullable=False, default=0)
 
     status = db.Column(db.String(50), nullable=False, default="CREATED")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    events = db.relationship("ShipmentEvent", backref="shipment", lazy=True, cascade="all, delete-orphan")
+    events = db.relationship(
+        "ShipmentEvent",
+        backref="shipment",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
 
 class ShipmentEvent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     shipment_id = db.Column(db.Integer, db.ForeignKey("shipment.id"), nullable=False)
 
-    label = db.Column(db.String(80), nullable=False)  # e.g. IN_TRANSIT
+    label = db.Column(db.String(80), nullable=False)
     note = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

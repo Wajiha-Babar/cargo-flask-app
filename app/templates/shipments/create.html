@@ -1,19 +1,44 @@
 {% extends "base.html" %}
+{% from "_form_helpers.html" import render_field %}
 {% block title %}Create Shipment{% endblock %}
 {% block content %}
-<h1>Create Shipment</h1>
-<form method="post">
-  {{ form.csrf_token }}
-  <label>Origin</label> {{ form.origin() }} <br>
-  <label>Destination</label> {{ form.destination() }} <br>
-  <label>Weight (kg)</label> {{ form.weight_kg() }} <br><br>
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h3 class="mb-1">Create shipment</h3>
+        <p class="text-muted mb-4">Enter route details and options.</p>
 
-  <fieldset>
-    <legend>Premium options</legend>
-    <label>{{ form.insurance() }} Insurance</label><br>
-    <label>{{ form.express() }} Express</label>
-  </fieldset>
-  <br>
-  {{ form.submit() }}
-</form>
+        <form method="post">
+          {{ form.csrf_token }}
+          <div class="row">
+            <div class="col-md-6">{{ render_field(form.origin) }}</div>
+            <div class="col-md-6">{{ render_field(form.destination) }}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">{{ render_field(form.weight_kg) }}</div>
+            <div class="col-md-6">{{ render_field(form.distance_km) }}</div>
+          </div>
+
+          <div class="border rounded p-3 mb-3 bg-light">
+            <div class="fw-semibold mb-2">Premium options</div>
+            <div class="form-check">
+              {{ form.insurance(class="form-check-input") }}
+              {{ form.insurance.label(class="form-check-label") }}
+            </div>
+            <div class="form-check">
+              {{ form.express(class="form-check-input") }}
+              {{ form.express.label(class="form-check-label") }}
+            </div>
+            <div class="small text-muted mt-2">
+              Note: Premium features require Premium plan.
+            </div>
+          </div>
+
+          {{ form.submit(class="btn btn-dark w-100") }}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Admin Shipment{% endblock %}
+{% block content %}
+{% if not shipment %}
+  <div class="alert alert-danger">Shipment not found.</div>
+{% else %}
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="mb-1">{{ shipment.tracking_number }}</h4>
+        <div class="text-muted">{{ shipment.origin }} → {{ shipment.destination }}</div>
+        <div class="mt-2"><b>Customer:</b> {{ shipment.owner.email }}</div>
+        <div><b>Status:</b> {{ shipment.status }}</div>
+        <div><b>Price:</b> Rs {{ "%.2f"|format(shipment.price) }}</div>
+        <hr>
+        <form method="post">
+          {{ form.csrf_token }}
+          <div class="mb-3">
+            {{ form.status.label(class="form-label") }}
+            {{ form.status(class="form-select") }}
+          </div>
+          <div class="mb-3">
+            {{ form.note.label(class="form-label") }}
+            {{ form.note(class="form-control") }}
+          </div>
+          {{ form.submit(class="btn btn-dark w-100") }}
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white"><b>Events</b></div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+          {% for e in shipment.events %}
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between">
+                <div class="fw-semibold">{{ e.label }}</div>
+                <div class="text-muted small">{{ e.created_at }}</div>
+              </div>
+              {% if e.note %}<div class="text-muted">{{ e.note }}</div>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

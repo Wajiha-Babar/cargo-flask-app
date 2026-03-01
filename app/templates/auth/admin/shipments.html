@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Admin Shipments{% endblock %}
+{% block content %}
+<h2 class="mb-3">Admin — All Shipments</h2>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>ID</th><th>Tracking</th><th>Customer</th><th>Status</th><th>Price</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in shipments %}
+          <tr>
+            <td>{{ s.id }}</td>
+            <td class="fw-semibold">{{ s.tracking_number }}</td>
+            <td>{{ s.owner.email }}</td>
+            <td><span class="badge text-bg-secondary">{{ s.status }}</span></td>
+            <td>Rs {{ "%.2f"|format(s.price) }}</td>
+            <td>
+              <a class="btn btn-sm btn-outline-dark" href="{{ url_for('admin.shipment_detail', shipment_id=s.id) }}">Manage</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
